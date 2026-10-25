@@ -1,0 +1,35 @@
+diff --git a/gpu/config/skia_limits.cc b/gpu/config/skia_limits.cc
+--- a/gpu/config/skia_limits.cc
++++ b/gpu/config/skia_limits.cc
+@@ -7,6 +7,7 @@
+ #include <inttypes.h>
+ 
+ #include "base/byte_size.h"
++#include "base/command_line.h"
+ #include "base/system/sys_info.h"
+ #include "build/build_config.h"
+ 
+@@ -38,6 +39,11 @@
+ void DetermineGraphiteImageProviderCacheLimits(
+     size_t* max_gpu_main_image_provider_cache_bytes,
+     size_t* max_viz_compositor_image_provider_cache_bytes) {
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    *max_gpu_main_image_provider_cache_bytes = 4 * 1024 * 1024;
++    *max_viz_compositor_image_provider_cache_bytes = 1024 * 1024;
++    return;
++  }
+   *max_gpu_main_image_provider_cache_bytes =
+       kMaxGpuMainGraphiteImageProviderBytes.Get();
+   *max_viz_compositor_image_provider_cache_bytes =
+@@ -47,6 +53,11 @@
+ void DetermineGrCacheLimitsFromAvailableMemory(
+     size_t* max_resource_cache_bytes,
+     size_t* max_glyph_cache_texture_bytes) {
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    *max_resource_cache_bytes = 32 * 1024 * 1024;
++    *max_glyph_cache_texture_bytes = 2 * 1024 * 1024;
++    return;
++  }
+   constexpr size_t kMaxGaneshResourceCacheBytes = 96 * 1024 * 1024;
+   constexpr size_t kMaxDefaultGlyphCacheTextureBytes = 2048 * 1024 * 4;
+   // Default limits.

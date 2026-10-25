@@ -220,19 +220,19 @@ def test_current_macos_addition_is_isolated_and_keeps_historical_prefix(tmp_path
     old_repo = clone_repo(tmp_path / "historical", additions=False)
     current, patches = selection.select(repo, "macos")
     old, old_patches = selection.select(old_repo, "macos")
-    assert len(old_patches) == 224 and len(patches) == 225
-    assert patches[:-1] == old_patches
+    assert len(old_patches) == 224 and len(patches) == 235
+    assert patches[:224] == old_patches
     assert (repo / "patches/series").read_bytes() == (old_repo / "patches/series").read_bytes()
     addition = current["selection"].pop("additions")
     assert current["selection"] == old["selection"]
-    assert addition["kind"] == "macos154-headless-command-explicit-quit"
+    assert addition["kind"] == "macos154-headless-command-and-opt-in-low-memory"
     assert addition["manifest"] == {
         "path": selection.MACOS154_ADDITIONS_MANIFEST,
         "sha256": selection.MACOS154_ADDITIONS_SHA256,
     }
-    assert addition["patches"] == current["patches"][-1:]
-    assert patches[-1][0] == "patches/chromium154-macos/0226-headless-command-explicit-quit.patch"
-    assert selection.digest(patches[-1][1]) == (
+    assert addition["patches"] == current["patches"][-11:]
+    assert patches[224][0] == "patches/chromium154-macos/0226-headless-command-explicit-quit.patch"
+    assert selection.digest(patches[224][1]) == (
         "ec1868b516e0ffea9366952f1e2d9c424aa2d5555b0e12d2bc456fd631d0ab73")
     linux = selection.select(repo, "linux")
     windows = selection.select(repo, "windows")

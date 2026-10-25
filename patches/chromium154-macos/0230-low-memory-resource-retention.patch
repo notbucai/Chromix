@@ -1,0 +1,36 @@
+diff --git a/cc/resources/resource_pool.cc b/cc/resources/resource_pool.cc
+--- a/cc/resources/resource_pool.cc
++++ b/cc/resources/resource_pool.cc
+@@ -14,6 +14,7 @@
+ #include <utility>
+ 
+ #include "base/atomic_sequence_num.h"
++#include "base/command_line.h"
+ #include "base/feature_list.h"
+ #include "base/format_macros.h"
+ #include "base/functional/bind.h"
+@@ -188,7 +189,10 @@
+     : resource_provider_(resource_provider),
+       context_provider_(context_provider),
+       task_runner_(std::move(task_runner)),
+-      resource_expiration_delay_(expiration_delay),
++      resource_expiration_delay_(
++          base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")
++              ? std::min(expiration_delay, base::Milliseconds(500))
++              : expiration_delay),
+       disallow_non_exact_reuse_(disallow_non_exact_reuse),
+       tracing_id_(base::trace_event::GetNextGlobalTraceId()),
+       tracing_track_(perfetto::NamedTrack("ResourcePool", tracing_id_)
+@@ -612,7 +616,11 @@
+ 
+ void ResourcePool::SetResourceUsageLimits(size_t max_memory_usage_bytes,
+                                           size_t max_resource_count) {
+-  max_memory_usage_bytes_ = max_memory_usage_bytes;
++  // Reduce retention of reusable resources; never evict resources in use.
++  max_memory_usage_bytes_ =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")
++          ? std::min(max_memory_usage_bytes, size_t{16 * 1024 * 1024})
++          : max_memory_usage_bytes;
+   max_resource_count_ = max_resource_count;
+ 
+   ReduceResourceUsage();

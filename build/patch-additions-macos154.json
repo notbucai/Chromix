@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "kind": "macos154-headless-command-explicit-quit",
+  "kind": "macos154-headless-command-and-opt-in-low-memory",
   "chromium_version": "154.0.8037.97",
   "core_commit": "3e46b13825f808f0886e484d44532372655e5fe4",
   "platform_commit": "f7ba75f94442abda7ac3ea81790c217f8636d3ba",
@@ -8,6 +8,46 @@
     {
       "path": "patches/chromium154-macos/0226-headless-command-explicit-quit.patch",
       "sha256": "ec1868b516e0ffea9366952f1e2d9c424aa2d5555b0e12d2bc456fd631d0ab73"
+    },
+    {
+      "path": "patches/chromium154-macos/0227-low-memory-startup-propagation.patch",
+      "sha256": "fc636dd4a4718144a53c1e41bc5b4c12ec3d1628d498364875d2ac0a6a1aed79"
+    },
+    {
+      "path": "patches/chromium154-macos/0228-low-memory-skia-cache-budgets.patch",
+      "sha256": "54dc301231430db54178bf6579ad4e484347a6aa13f998692f5a20819736dd58"
+    },
+    {
+      "path": "patches/chromium154-macos/0229-low-memory-no-kept-spare.patch",
+      "sha256": "4b50480a34ddc43daa8fab80c20c32cd1b39eee00114672a1dd35f875ad9e1f4"
+    },
+    {
+      "path": "patches/chromium154-macos/0230-low-memory-resource-retention.patch",
+      "sha256": "1e9a13d7cb9b66233e82f9bd156bfb2e012e544e6b4c43df09b486fb5cfe947a"
+    },
+    {
+      "path": "patches/chromium154-macos/0231-cold-build-generator-esbuild.patch",
+      "sha256": "c0b70efdf009734c660e926bb94e8fbd052dbea1b7c73576c1a71fcf0f4089f5"
+    },
+    {
+      "path": "patches/chromium154-macos/0232-cold-build-generator-bundle.patch",
+      "sha256": "808943913d111aab4ab23f1df82e81cc14c266c6bd8ba2d834110e3b28a5e5df"
+    },
+    {
+      "path": "patches/chromium154-macos/0233-cold-build-generator-typescript.patch",
+      "sha256": "0d4bb62c5b86569d2ca98e968d6e3ce9914ccfb70c13ba94b0c3be210b948fcc"
+    },
+    {
+      "path": "patches/chromium154-macos/0234-cold-build-generator-typescript_vars.patch",
+      "sha256": "1ba220ed05f78f422535c5905d6ea8a361624077f92ec082e6c3b0fc42f6c8e3"
+    },
+    {
+      "path": "patches/chromium154-macos/0235-cold-build-generator-devtools_paths.patch",
+      "sha256": "8ca43e1e9be48bdaf3adbf8b26a513220db0bbd1fda0cb20cc28a69bcb4d5fc9"
+    },
+    {
+      "path": "patches/chromium154-macos/0236-cold-build-generator-typescript.patch",
+      "sha256": "05e64b435d3b56642502507adb3427d95b26ebef3af6c8d20b0d1d1f4dc6cf72"
     }
   ]
 }

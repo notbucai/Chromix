@@ -1,0 +1,12 @@
+diff --git a/third_party/devtools-frontend/src/scripts/build/typescript/typescript_vars.gni b/third_party/devtools-frontend/src/scripts/build/typescript/typescript_vars.gni
+--- a/third_party/devtools-frontend/src/scripts/build/typescript/typescript_vars.gni
++++ b/third_party/devtools-frontend/src/scripts/build/typescript/typescript_vars.gni
+@@ -10,7 +10,7 @@
+ } else if (host_os == "win") {
+   tsc_binary = "//third_party/typescript/windows-amd64/src/lib/tsc.exe"
+ } else if (host_os == "mac") {
+-  tsc_binary = "/opt/homebrew/bin/tsc"
++  tsc_binary = devtools_location_prepend + "third_party/chromix-macos/node_modules/@typescript/typescript-darwin-${host_cpu}/lib/tsc"
+ }
+ 
+ # Standard TypeScript library definitions needed for remote execution (RBE /

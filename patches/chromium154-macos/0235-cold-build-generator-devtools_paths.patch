@@ -1,0 +1,15 @@
+diff --git a/third_party/devtools-frontend/src/scripts/devtools_paths.py b/third_party/devtools-frontend/src/scripts/devtools_paths.py
+--- a/third_party/devtools-frontend/src/scripts/devtools_paths.py
++++ b/third_party/devtools-frontend/src/scripts/devtools_paths.py
+@@ -55,7 +55,10 @@
+ 
+ 
+ def esbuild_path():
+-    return '/opt/homebrew/bin/esbuild'
++    return path.join(devtools_root_path(), 'third_party', 'chromix-macos',
++                     'node_modules', '@esbuild', 'darwin-' +
++                     ('arm64' if platform.machine() == 'arm64' else 'x64'),
++                     'bin', 'esbuild')
+ 
+ 
+ def license_checker_path():

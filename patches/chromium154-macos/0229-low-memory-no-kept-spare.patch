@@ -1,0 +1,15 @@
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -3545,6 +3545,11 @@
+ 
+ // static
+ bool RenderProcessHostImpl::IsSpareProcessKeptAtAllTimes() {
++  // Avoid keeping an unused JS VM alive for single-task browser instances.
++  // This does not change process locks or site isolation.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    return false;
++  }
+   // Spare renderer actually hurts performance on low-memory devices.  See
+   // https://crbug.com/843775 for more details.
+   //

@@ -1,0 +1,26 @@
+diff --git a/third_party/devtools-frontend/src/scripts/build/esbuild.js b/third_party/devtools-frontend/src/scripts/build/esbuild.js
+--- a/third_party/devtools-frontend/src/scripts/build/esbuild.js
++++ b/third_party/devtools-frontend/src/scripts/build/esbuild.js
+@@ -19,15 +19,18 @@
+ // esbuild module uses binary in this path.
+ const binaryName = os.type() === 'Windows_NT' ? 'esbuild.exe' : 'esbuild';
+ process.env.ESBUILD_BINARY_PATH = path.join(
+-    '/',
+-    'opt',
+-    'homebrew',
++    devtoolsRootPath(),
++    'third_party',
++    'chromix-macos',
++    'node_modules',
++    '@esbuild',
++    `darwin-${process.arch}`,
+     'bin',
+     binaryName,
+ );
+ // This needs to be after the ESBUILD_BINARY_PATH is set
+ 
+-const esbuild = await import('esbuild');
++const esbuild = await import('../../third_party/chromix-macos/node_modules/esbuild/lib/main.js');
+ 
+ const entryPoints = [process.argv[2]];
+ const outfile = process.argv[3];
