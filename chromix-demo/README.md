@@ -223,3 +223,7 @@ Chromix 的认证 SOCKS5 配置会将 socks5h 规范化为 socks5，Playwright �
 防本地 DNS 解析的 host-resolver-rules；其启动警告不等于代理连接失败。
 
 Windows handoff: the Node headless policy is portable, but macOS native patches/binaries/Cocoa launchers and `footprint` results are not interchangeable with Windows. The kernel snapshot documents an opt-in Windows155 overlay in `docs/windows-session-handoff.md`; its new native warning change is unbuilt and requires Windows validation. `native-proxy-options.mjs` emits an unquoted restrictive resolver rule for explicit IPv4 SOCKS proxies; other warnings are retained.
+
+## 可选原生视频禁播
+
+使用含新补丁的内核后，`npm start -- --profile env-lite --disable-video` 禁播视频；`--enable-video` 本次恢复播放。默认不禁用，与低内存模式独立。视频附带的声音也不可用，独立音频不受该策略限制。此原生补丁尚未构建验证。详见 [策略及验证边界](../docs/video-playback-policy.md)。

@@ -37,6 +37,10 @@
     {
       "path": "patches/chromium155-windows-low-memory/0248-restricted-socks-dns-warning.patch",
       "sha256": "0376addb5a76d711e61ec03844e14082427f876fc6eb454ae0e8bcfb26a8452e"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0249-opt-in-disable-video-playback.patch",
+      "sha256": "42a0f739e9be56317d667fc814510c9ef37bdb55fef4672f3597b7f9a4bd6da3"
     }
   ]
 }

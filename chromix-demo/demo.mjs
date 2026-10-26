@@ -13,12 +13,14 @@ const headless = smoke || process.argv.includes('--headless');
 const nativeLowMemory = process.argv.includes('--native-low-memory');
 if (nativeLowMemory && !process.env.CLOAKBROWSER_BINARY_PATH) throw new Error('原生优化需要 CLOAKBROWSER_BINARY_PATH 指向已编译的新内核');
 const args = process.argv.slice(2);
+if (args.includes('--disable-video') && args.includes('--enable-video')) throw new Error('禁播与启用参数不能同时使用');
+if (args.includes('--disable-video') && !process.env.CLOAKBROWSER_BINARY_PATH) throw new Error('禁播视频需要 CLOAKBROWSER_BINARY_PATH 指向含该补丁的新内核');
 let name = 'demo';
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === '--smoke' || args[i] === '--headless' || args[i] === '--native-low-memory') continue;
+  if (args[i] === '--smoke' || args[i] === '--headless' || args[i] === '--native-low-memory' || args[i] === '--disable-video' || args[i] === '--enable-video') continue;
   if (args[i] === '--profile' && args[i + 1] && !args[i + 1].startsWith('--')) {
     name = args[++i];
-  } else throw new Error('用法：npm start -- --profile 环境名 [--headless] [--native-low-memory]');
+  } else throw new Error('用法：npm start -- --profile 环境名 [--headless] [--native-low-memory] [--disable-video|--enable-video]');
 }
 let config;
 try { config = await loadEnvironment(name); }
@@ -26,6 +28,9 @@ catch (error) {
   if (name !== 'demo' || error.code !== 'ENOENT') throw error;
   config = await createEnvironment('demo');
 }
+// Overrides apply only to this launch; never rewrite saved fingerprints/profile data.
+if (args.includes('--disable-video')) config = { ...config, disableVideoPlayback: true };
+if (args.includes('--enable-video')) config = { ...config, disableVideoPlayback: false };
 const artifacts = resolve(root, 'artifacts', name);
 await mkdir(artifacts, { recursive: true });
 await mkdir(resolve(root, 'profiles'), { recursive: true });
@@ -34,6 +39,7 @@ const profile = smoke
   : resolve(root, 'profiles', name);
 let context;
 try {
+  if (config.disableVideoPlayback) console.log('原生视频禁播已请求；必须使用含补丁的内核，视频及其声音不可用。');
   const options = environmentOptions(config, profile);
   if (nativeLowMemory) options.args.push('--uxr-low-memory');
   options.args = applyHeadlessMemoryPolicy(options.args, { headless, lowMemory: config.memoryMode === 'low' });

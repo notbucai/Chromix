@@ -220,7 +220,7 @@ def test_current_macos_addition_is_isolated_and_keeps_historical_prefix(tmp_path
     old_repo = clone_repo(tmp_path / "historical", additions=False)
     current, patches = selection.select(repo, "macos")
     old, old_patches = selection.select(old_repo, "macos")
-    assert len(old_patches) == 224 and len(patches) == 239
+    assert len(old_patches) == 224 and len(patches) == 240
     assert patches[:224] == old_patches
     assert (repo / "patches/series").read_bytes() == (old_repo / "patches/series").read_bytes()
     addition = current["selection"].pop("additions")
@@ -230,7 +230,7 @@ def test_current_macos_addition_is_isolated_and_keeps_historical_prefix(tmp_path
         "path": selection.MACOS154_ADDITIONS_MANIFEST,
         "sha256": selection.MACOS154_ADDITIONS_SHA256,
     }
-    assert addition["patches"] == current["patches"][-15:]
+    assert addition["patches"] == current["patches"][-16:]
     assert patches[224][0] == "patches/chromium154-macos/0226-headless-command-explicit-quit.patch"
     assert selection.digest(patches[224][1]) == (
         "ec1868b516e0ffea9366952f1e2d9c424aa2d5555b0e12d2bc456fd631d0ab73")

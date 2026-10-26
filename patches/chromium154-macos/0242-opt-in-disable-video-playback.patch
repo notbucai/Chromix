@@ -1,0 +1,54 @@
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -2878,6 +2878,11 @@
+   if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
+     command_line->AppendSwitch("uxr-low-memory");
+   }
++  // Independent opt-in: keep video playback enabled unless explicitly disabled.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
++          "uxr-disable-video-playback")) {
++    command_line->AppendSwitch("uxr-disable-video-playback");
++  }
+   crash_keys::AppendStringAnnotationsCommandLineSwitch(command_line);
+ #if BUILDFLAG(IS_MAC)
+   std::unique_ptr<metrics::ClientInfo> client_info =
+diff --git a/third_party/blink/renderer/core/html/media/html_media_element.cc b/third_party/blink/renderer/core/html/media/html_media_element.cc
+--- a/third_party/blink/renderer/core/html/media/html_media_element.cc
++++ b/third_party/blink/renderer/core/html/media/html_media_element.cc
+@@ -33,6 +33,7 @@
+ 
+ #include "base/auto_reset.h"
+ #include "base/check_is_test.h"
++#include "base/command_line.h"
+ #include "base/containers/span.h"
+ #include "base/feature_list.h"
+ #include "base/memory/ptr_util.h"
+@@ -1485,6 +1486,14 @@
+ void HTMLMediaElement::LoadResource(const WebMediaPlayerSource& source,
+                                     const String& content_type) {
+   DCHECK(IsMainThread());
++  // Explicit feature restriction, independent of memory mode and fingerprint.
++  // Fail before creating a player for URL, MediaSource and MediaStream inputs.
++  if (IsHTMLVideoElement() &&
++      base::CommandLine::ForCurrentProcess()->HasSwitch(
++          "uxr-disable-video-playback")) {
++    NoneSupported("Video playback disabled by command-line policy");
++    return;
++  }
+   KURL url;
+   if (source.IsURL()) {
+     url = source.GetAsURL();
+@@ -3171,6 +3180,12 @@
+ 
+ std::optional<DOMExceptionCode> HTMLMediaElement::Play() {
+   DVLOG(2) << "play(" << *this << ")";
++
++  if (IsHTMLVideoElement() &&
++      base::CommandLine::ForCurrentProcess()->HasSwitch(
++          "uxr-disable-video-playback")) {
++    return DOMExceptionCode::kNotSupportedError;
++  }
+ 
+   std::optional<DOMExceptionCode> exception_code =
+       autoplay_policy_->RequestPlay();

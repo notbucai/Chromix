@@ -21,6 +21,7 @@ Do not copy a macOS binary, out directory, toolchain or object cache to Windows.
   Skia budgets, no always-kept spare, reusable compositor retention limits, safe
   audio idle reset, no explicit spare warmup, and no persistent metric spare file.
   The eighth patch implements the restrictive SOCKS DNS warning exception.
+  A ninth patch adds independently opt-in HTML video playback blocking.
 - macOS cold-generator repairs and Metal setup are NOT Windows optimizations.
 
 ## Pins and opt-in identity
@@ -31,9 +32,9 @@ Mac Chromium remains 154.0.8037.97; these are separate platform stacks.
 
 The original Windows manifest and its seven entries remain unchanged. Default
 Windows selection stays at 231 patches. Set `CHROMIX_WINDOWS_LOW_MEMORY=1` to
-select 239 authenticated patches. The preparation/cache key changes accordingly.
+select 240 authenticated patches. The preparation/cache key changes accordingly.
 The overlay manifest is `build/patch-additions-windows155-low-memory.json`.
-Its SHA256 is c68cfc5030a9edbb0ea425be9ce660cf31cc1a2f4c6eb26c5eb801e825e0455e.
+Its SHA256 is 735970b96003266e14fa1c88b742d97390890c4887a7d73a301271c84ed0b148.
 Never disable manifest/source validation or rewrite a ready stamp to force resume.
 
 In PowerShell, AFTER reviewing prerequisites in build/windows/build.ps1:
@@ -46,7 +47,7 @@ python tools/patch_selection.py --repo . --platform windows --paths
 ```
 
 Use a NEW work directory for this changed identity. Existing prepared/restored
-231-patch snapshots cannot simply be resumed as 239-patch sources. Historical
+231-patch snapshots cannot simply be resumed as 240-patch sources. Historical
 recovery/migration tools keep their original pinned identities; do not enable
 this overlay during a historical migration or change those tools' hashes. A
 future migration of an existing source tree must verify both the old and new
@@ -54,7 +55,7 @@ complete stacks before advancing state. No such migration is claimed here.
 
 The preparation script verifies the actual full ungoogled+Windows source tree.
 The preflight here checked only pinned upstream files plus the selected Chromix
-hunks in eight relevant files, not the complete Windows core/platform patch stack.
+hunks in nine relevant files, not the complete Windows core/platform patch stack.
 Windows compilation/linking and runtime remain PENDING.
 
 ## Exact warning behavior
@@ -123,11 +124,21 @@ Node, recording working set/private bytes and identical sampling times/inputs.
 
 ## Source-only checks available in this snapshot
 
-The separate handoff ZIP evidence (not included in Git) contains the pinned eight-file preimages and the successful
-zero-fuzz replay report. You may repeat that limited check without building:
+The earlier handoff ZIP evidence (not included in Git) contains only the original
+eight preimages. The video-policy patch requires a ninth pinned preimage listed
+in tools/tests/fixtures/windows155-low-memory-preimages.json; fetch that exact
+Gitiles URL and verify its SHA256 before rerunning the source check. You may repeat that limited check without building:
 
 ```powershell
 python tools/check_windows155_low_memory_preimages.py --preimages '..\evidence\windows155-source-check\pristine' --patch-bin 'C:\path\to\patch.exe' --output 'C:\temp\chromix-source-check.json'
 ```
 
 This does not replace full preparation verification, compilation or runtime tests.
+
+
+## Optional video playback restriction (source only, not built)
+
+See [video-playback-policy.md](video-playback-policy.md). This patch is included
+in the opted-in Windows overlay, but it does nothing unless the browser is
+started with `--uxr-disable-video-playback`. It is independent of
+`--uxr-low-memory`; remove the switch and restart to restore playback.

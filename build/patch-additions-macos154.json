@@ -64,6 +64,10 @@
     {
       "path": "patches/chromium154-macos/0241-restricted-socks-dns-warning.patch",
       "sha256": "b4919aa50240b7e3c86417da00d1980852d7c178b565c74226d847ef9ff27e23"
+    },
+    {
+      "path": "patches/chromium154-macos/0242-opt-in-disable-video-playback.patch",
+      "sha256": "28ecc3629f70656288347aa2d4b36e6529dc3744fd284dbbcaaa0b88218054f4"
     }
   ]
 }

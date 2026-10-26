@@ -49,6 +49,12 @@
       "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/chrome/browser/ui/startup/bad_flags_prompt.cc?format=TEXT",
       "sha256": "fec8f53e1f6986c53f6aebc752b65cbffe9c5b1b1da20d41d6bca98a70a259a4",
       "bytes": 15400
+    },
+    {
+      "path": "third_party/blink/renderer/core/html/media/html_media_element.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/third_party/blink/renderer/core/html/media/html_media_element.cc?format=TEXT",
+      "sha256": "5d12f20516115180dce771df082c0a293aca94f288d8e3466594bab2f3066fd2",
+      "bytes": 204695
     }
   ]
 }

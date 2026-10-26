@@ -19,7 +19,7 @@ def test_opt_in_preserves_existing_231_prefix_and_other_platforms(tmp_path,monke
     assert len(patches)==231
     monkeypatch.setenv('CHROMIX_WINDOWS_LOW_MEMORY','1')
     current,selected=selection.select(repo,'windows')
-    assert len(selected)==239 and selected[:231]==patches
+    assert len(selected)==240 and selected[:231]==patches
     assert current['selection']['additions']['optimizations']['sha256']==selection.WINDOWS155_LOW_MEMORY_SHA256
     assert selection.preparation_key(repo,'windows','posix')!=old_key
     assert selection.select(repo,'macos')==mac and selection.select(repo,'linux')==linux

@@ -37,7 +37,7 @@ function defaultUserAgent(browserVersion) {
   if (!platform || !/^[0-9]+$/.test(major)) throw new Error('无法为当前平台生成浏览器 UA');
   return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${major}.0.0.0 Safari/537.36`;
 }
-export async function createEnvironment(name, { lowMemory = false } = {}) {
+export async function createEnvironment(name, { lowMemory = false, disableVideoPlayback = false } = {}) {
   const path = configPath(name);
   await mkdir(directory, { recursive: true });
   const existing = await listEnvironments();
@@ -61,6 +61,7 @@ export async function createEnvironment(name, { lowMemory = false } = {}) {
     proxy: process.env.CHROMIX_PROXY || null,
     display: lowMemory ? { width: 1440, height: 900, viewportWidth: 1280, viewportHeight: 720, deviceScaleFactor: 1 } : display,
     ...(lowMemory ? { memoryMode: 'low' } : {}),
+    ...(disableVideoPlayback ? { disableVideoPlayback: true } : {}),
     userAgent: defaultUserAgent(process.env.CLOAKBROWSER_VERSION || '154.0.8037.57'),
   };
   await writeFile(path, `${JSON.stringify(config, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
@@ -68,6 +69,9 @@ export async function createEnvironment(name, { lowMemory = false } = {}) {
 }
 export function environmentOptions(config, userDataDir = resolve(root, 'profiles', config.name)) {
   if (existsSync(resolve(userDataDir, '.chromix-maintenance.lock'))) throw new Error('环境正在维护，请稍后启动');
+  if (config.disableVideoPlayback !== undefined && typeof config.disableVideoPlayback !== 'boolean') {
+    throw new Error('disableVideoPlayback 必须为布尔值');
+  }
   const display = config.display;
   return {
     userDataDir,
@@ -78,6 +82,7 @@ export function environmentOptions(config, userDataDir = resolve(root, 'profiles
     timezone: config.timezone,
     args: [`--fingerprint=${config.seed}`, '--disable-blink-features=AutomationControlled',
       ...restrictedSocksDnsArgs(config.proxy),
+      ...(config.disableVideoPlayback === true ? ['--uxr-disable-video-playback'] : []),
       ...(config.memoryMode === 'low' ? ['--disable-gpu', '--disable-software-rasterizer', '--enable-low-end-device-mode', '--renderer-process-limit=1', '--disk-cache-size=4194304', '--media-cache-size=1048576'] : []),
     ],
     ...(config.proxy ? { proxy: config.proxy } : {}),
