@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+!.env.example
+environments/
+profiles/
+artifacts/
+profile-maintenance-backups/
+launchers/
+*.log

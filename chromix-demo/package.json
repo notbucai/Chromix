@@ -1,0 +1,30 @@
+{
+  "name": "chromix-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Chromix Node.js browser automation demo",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file=.env demo.mjs",
+    "smoke": "node --env-file=.env demo.mjs --smoke",
+    "browser:install": "node --env-file=.env node_modules/@xiaoxiaofeihh/chromix/cli.js install",
+    "env:create": "node --env-file=.env manage-environments.mjs create",
+    "env:list": "node --env-file=.env manage-environments.mjs list",
+    "verify:environments": "node --env-file=.env verify-environments.mjs",
+    "fingerprint:check": "node --env-file=.env check-fingerprint-support.mjs",
+    "x:check": "node --env-file=.env check-x-headless.mjs",
+    "memory:check": "node --env-file=.env memory-benchmark.mjs",
+    "profile:compact": "node --env-file=.env profile-maintenance.mjs",
+    "test:headless-policy": "node headless-memory-policy.test.mjs",
+    "x:login:check": "node --env-file=.env verify-x-login-flow.mjs",
+    "test:login-flow": "node --env-file=.env --test login-flow.test.mjs",
+    "test:proxy-options": "node native-proxy-options.test.mjs"
+  },
+  "dependencies": {
+    "@xiaoxiaofeihh/chromix": "^0.1.5",
+    "playwright-core": "^1.64.1"
+  }
+}

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { applyHeadlessMemoryPolicy, playwrightDisabledFeatures, parsePlaywrightDisabledFeatures, headlessUIFeatures, headlessAllocatorCacheFeatures } from './headless-memory-policy.mjs';
+const options={headless:true,lowMemory:true};const args=['--fingerprint=2878977440','--disable-features=CallerFeature','--disable-gpu'];
+assert.deepEqual(applyHeadlessMemoryPolicy(args,{headless:false,lowMemory:true}),args);
+assert.deepEqual(applyHeadlessMemoryPolicy(args,{headless:true,lowMemory:false}),args);
+const merged=applyHeadlessMemoryPolicy(args,options);assert.equal(merged.filter(x=>x.startsWith('--disable-features=')).length,1);const names=new Set(merged.at(-1).split('=')[1].split(','));
+for(const name of [...playwrightDisabledFeatures(),'CallerFeature',...headlessUIFeatures,...headlessAllocatorCacheFeatures])assert(names.has(name));assert(merged.includes(args[0]));assert(merged.includes('--disable-gpu'));assert.equal(names.size,new Set([...playwrightDisabledFeatures(),'CallerFeature',...headlessUIFeatures,...headlessAllocatorCacheFeatures]).size);
+assert.throws(()=>parsePlaywrightDisabledFeatures('disabledFeatures = [getFeatures()].filter(Boolean);'));
+assert.throws(()=>applyHeadlessMemoryPolicy(['--enable-features=WebUIOmniboxPopup'],options),/冲突/);
+assert.throws(()=>applyHeadlessMemoryPolicy(['--enable-features=PartitionAllocLargeThreadCacheSize'],options),/冲突/);
+console.log('PASS: headed unchanged; all existing default/caller features retained; only three browser UI and two allocator-cache features added; format changes/conflicts rejected');

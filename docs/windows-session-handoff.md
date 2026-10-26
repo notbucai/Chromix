@@ -1,8 +1,8 @@
 # Windows continuation: this local Chromix optimization session
 
 Status: source-only handoff. NO kernel build was run for the new warning change.
-This snapshot includes local work that is not on the upstream GitHub branch.
-Copy the handoff files or local repository; cloning upstream alone is insufficient.
+This fork includes the local optimization commits and the secret-free chromix-demo
+subdirectory. Clone this fork to continue; the original upstream lacks these changes.
 Do not copy a macOS binary, out directory, toolchain or object cache to Windows.
 
 ## What is reusable
@@ -15,7 +15,7 @@ Do not copy a macOS binary, out directory, toolchain or object cache to Windows.
   working set/private bytes and the numbers must not be treated as a Windows claim.
 - Node environment separation, fixed seeds, and bounded X login regression are
   portable. The cache-compaction helper currently uses POSIX process/lock checks;
-  it is excluded from the Windows demo subset until its lock checks are adapted. Create Windows-native profiles/UA;
+  it is retained in Git for the Mac workflow but MUST NOT be used on Windows until its lock checks are adapted. Create Windows-native profiles/UA;
   do not blindly reuse macOS paths, UA strings, Cocoa launchers, or encrypted data.
 - The Windows155 optional overlay ports seven native policies: switch propagation,
   Skia budgets, no always-kept spare, reusable compositor retention limits, safe
@@ -82,9 +82,9 @@ correct. Do not label banner behavior validated until the new Windows binary run
 
 ## Node setup on Windows
 
-The package contains a secret-free demo snapshot. It excludes .env, all real
+The repository chromix-demo subdirectory contains a secret-free demo snapshot. It excludes .env, all real
 profiles, proxy credentials, cached browsers, artifacts and macOS Cocoa launchers.
-Use Node.js 22+ and Python 3.12. In the extracted chromix-demo directory:
+Use Node.js 22+ and Python 3.12. In the repository chromix-demo directory:
 
 ```powershell
 Copy-Item .env.example .env
@@ -117,13 +117,13 @@ error. Transparent/inert auxiliary password fields must be excluded. CAPTCHA,
 rate limiting, unexpected response, or stopping before the password is NOT PASS.
 No automatic retries; use temporary profiles and preserve all real login data.
 
-The Mac-only memory benchmark uses `footprint` and must not be run as a Windows
+The included Mac-only memory benchmark uses `footprint` and must not be run as a Windows
 memory claim. Measure all browser descendants on Windows separately, excluding
 Node, recording working set/private bytes and identical sampling times/inputs.
 
 ## Source-only checks available in this snapshot
 
-The handoff evidence includes the pinned eight-file preimages and the successful
+The separate handoff ZIP evidence (not included in Git) contains the pinned eight-file preimages and the successful
 zero-fuzz replay report. You may repeat that limited check without building:
 
 ```powershell
