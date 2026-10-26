@@ -55,7 +55,7 @@
     },
     {
       "path": "patches/chromium154-macos/0239-low-memory-explicit-spare-warmup.patch",
-      "sha256": "0ce01e12fbc1a6212f44b8a956c2bf756e31100a156cb23f777b650c920e395d"
+      "sha256": "d6c71cde2bdff07756472ca33d469301f488bb8be7af3a2f695d97322e7d86f7"
     },
     {
       "path": "patches/chromium154-macos/0240-low-memory-no-persistent-metrics.patch",
