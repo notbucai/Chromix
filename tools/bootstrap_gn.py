@@ -24,8 +24,8 @@ def runnable(path: Path) -> bool:
 def prepare(src: Path, out: Path) -> None:
     src, out = src.absolute(), out.absolute()
     relative = out.relative_to(src)
-    if relative.parts not in (("out", "Default"), ("out", "Chromix")):
-        raise ValueError("GN output must be src/out/Default or src/out/Chromix")
+    if relative.parts not in (("out", "Default"), ("out", "Chromix"), ("out", "ChromixRound2")):
+        raise ValueError("GN output must be src/out/Default, src/out/Chromix or src/out/ChromixRound2")
     for path in (src, src / "out", out):
         if path.is_symlink() or not path.is_dir():
             raise ValueError(f"missing or linked GN directory: {path}")

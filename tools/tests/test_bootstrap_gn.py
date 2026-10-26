@@ -64,7 +64,7 @@ raise SystemExit({exit_code})
 ''')
 
 
-@pytest.mark.parametrize("output", ["Default", "Chromix"])
+@pytest.mark.parametrize("output", ["Default", "Chromix", "ChromixRound2"])
 def test_runnable_gn_is_preserved_without_bootstrap(tree, output):
     src, _ = tree
     out = src / "out" / output
