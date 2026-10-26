@@ -22,7 +22,12 @@ select_macos_xcode
 mkdir -p "$WORK"
 WORK="$(cd "$WORK" && pwd)"
 SRC="$WORK/src"
-OUT="$SRC/out/Chromix"
+OUTPUT_NAME="${CHROMIX_OUTPUT_NAME:-Chromix}"
+case "$OUTPUT_NAME" in
+  Chromix|ChromixRound2) ;;
+  *) echo "unsupported CHROMIX_OUTPUT_NAME" >&2; exit 2 ;;
+esac
+OUT="$SRC/out/$OUTPUT_NAME"
 if [ -f "$SRC/.chromix-upstream-restored.json" ]; then
   MACOS_RUNTIME_ENV="$(python3 "$REPO/tools/macos_runtime.py" --src "$SRC" --arch "$ARCH")"
   eval "$MACOS_RUNTIME_ENV"

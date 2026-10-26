@@ -1,0 +1,16 @@
+diff --git a/content/browser/audio/audio_service.cc b/content/browser/audio/audio_service.cc
+--- a/content/browser/audio/audio_service.cc
++++ b/content/browser/audio/audio_service.cc
+@@ -202,6 +202,12 @@
+     // ServiceProcessHost::Launch(observed) directly because the EDID path
+     // posts the receiver to a thread pool task before launching.
+     auto receiver = observed.remote().BindNewPipeAndPassReceiver();
++    // Release only when Mojo confirms no live child interfaces, pending replies
++    // or in-flight requests. Device monitoring and active streams keep it alive.
++    // Configure this before LaunchAudioService notifies observers/binds children.
++    if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++      observed.remote().reset_on_idle_timeout(base::Seconds(5));
++    }
+ #ifdef PASS_EDID_ON_COMMAND_LINE
+     // The EDID scan is done in a COM STA thread and the result
+     // passed to the audio service launcher.

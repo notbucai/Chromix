@@ -1,0 +1,18 @@
+diff --git a/content/browser/renderer_host/spare_render_process_host_manager_impl.cc b/content/browser/renderer_host/spare_render_process_host_manager_impl.cc
+--- a/content/browser/renderer_host/spare_render_process_host_manager_impl.cc
++++ b/content/browser/renderer_host/spare_render_process_host_manager_impl.cc
+@@ -454,6 +454,14 @@
+ RenderProcessHost* SpareRenderProcessHostManagerImpl::WarmupSpare(
+     BrowserContext* browser_context,
+     std::optional<base::TimeDelta> timeout) {
++  // IsSpareProcessKeptAtAllTimes() does not cover explicit startup/navigation
++  // warmups. Do not allocate an unused VM in the opt-in single-task policy.
++  // Site-locked renderers are still created normally for every navigation.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    CleanupSpares(SpareRendererDispatchResult::kDestroyedNotEnabled);
++    no_spare_renderer_reason_ = NoSpareRendererReason::kNotEnabled;
++    return nullptr;
++  }
+   if (delay_timer_) {
+     // If the timeout does not have a value, the delayed creation is no longer
+     // required since we will create the spare renderer here.

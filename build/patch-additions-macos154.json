@@ -48,6 +48,18 @@
     {
       "path": "patches/chromium154-macos/0236-cold-build-generator-typescript.patch",
       "sha256": "05e64b435d3b56642502507adb3427d95b26ebef3af6c8d20b0d1d1f4dc6cf72"
+    },
+    {
+      "path": "patches/chromium154-macos/0237-low-memory-audio-idle.patch",
+      "sha256": "ec7ceb08f772e8bab28214233dff4bb1af3946bba194a00332085b9434d1d952"
+    },
+    {
+      "path": "patches/chromium154-macos/0239-low-memory-explicit-spare-warmup.patch",
+      "sha256": "0ce01e12fbc1a6212f44b8a956c2bf756e31100a156cb23f777b650c920e395d"
+    },
+    {
+      "path": "patches/chromium154-macos/0240-low-memory-no-persistent-metrics.patch",
+      "sha256": "303550fc0b1c13adac6f42a32006de9c79723d4eede72e17cb8f46d2b1d8aade"
     }
   ]
 }
