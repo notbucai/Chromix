@@ -1,0 +1,34 @@
+diff --git a/components/metrics/persistent_histograms.cc b/components/metrics/persistent_histograms.cc
+--- a/components/metrics/persistent_histograms.cc
++++ b/components/metrics/persistent_histograms.cc
+@@ -5,6 +5,8 @@
+ #include "components/metrics/persistent_histograms.h"
+ 
+ #include <string_view>
++
++#include "base/command_line.h"
+ 
+ #include "base/files/file_enumerator.h"
+ #include "base/files/file_util.h"
+@@ -260,7 +262,8 @@
+   PersistentHistogramsMode mode = PersistentHistogramsMode::kNotEnabled;
+   // Note: The extra feature check is needed so that we don't use the default
+   // value of the storage param if the feature is disabled.
+-  if (persistent_histograms_enabled) {
++  if (persistent_histograms_enabled &&
++      !base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
+     if (storage == kPersistentHistogramStorageMappedFile) {
+       mode = PersistentHistogramsMode::kMappedFile;
+     } else if (storage == kPersistentHistogramStorageLocalMemory) {
+@@ -272,6 +275,11 @@
+ }
+ 
+ void PersistentHistogramsCleanup(const base::FilePath& metrics_dir) {
++  // The opt-in policy keeps ordinary in-memory histograms, but does not create
++  // crash-persistent metric files or reserve a 4 MiB spare in each profile.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    return;
++  }
+   base::FilePath spare_file = GetSpareFilePath(metrics_dir);
+ 
+   // Schedule the creation of a "spare" file for use on the next run.

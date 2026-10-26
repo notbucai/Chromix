@@ -1,0 +1,68 @@
+diff --git a/chrome/browser/ui/startup/bad_flags_prompt.cc b/chrome/browser/ui/startup/bad_flags_prompt.cc
+--- a/chrome/browser/ui/startup/bad_flags_prompt.cc
++++ b/chrome/browser/ui/startup/bad_flags_prompt.cc
+@@ -45,6 +45,9 @@
+ #include "media/base/media_switches.h"
+ #include "media/media_buildflags.h"
+ #include "net/base/features.h"
++#include "net/base/ip_address.h"
++#include "net/base/proxy_server.h"
++#include "net/base/proxy_string_util.h"
+ #include "net/base/switches.h"
+ #include "sandbox/policy/switches.h"
+ #include "services/network/public/cpp/network_switches.h"
+@@ -78,6 +81,42 @@
+ namespace {
+ 
+ #if !BUILDFLAG(IS_ANDROID)
++// Suppress only the exact fail-closed DNS guard used with one explicit SOCKS5
++// IPv4 proxy. Redirects, quoted/unparseable rules, bypasses and other bad flags
++// must retain their normal warnings. This changes UI only, never DNS behavior.
++bool IsRestrictedSocksDnsGuard(const base::CommandLine& command_line) {
++  if (command_line.HasSwitch(switches::kNoProxyServer) ||
++      command_line.HasSwitch(switches::kProxyAutoDetect) ||
++      command_line.HasSwitch(switches::kProxyPacUrl) ||
++      command_line.HasSwitch(network::switches::kHostRules)) {
++    return false;
++  }
++  if (command_line.HasSwitch(switches::kProxyBypassList) &&
++      command_line.GetSwitchValueASCII(switches::kProxyBypassList) !=
++          "<-loopback>") {
++    return false;
++  }
++  const std::string proxy_uri =
++      command_line.GetSwitchValueASCII(switches::kProxyServer);
++  const net::ProxyServer proxy =
++      net::ProxyUriToProxyServer(proxy_uri, net::ProxyServer::SCHEME_HTTP);
++  if (!proxy.is_valid() || proxy.scheme() != net::ProxyServer::SCHEME_SOCKS5 ||
++      proxy.host_port_pair().port() == 0 ||
++      proxy_uri != "socks5://" + proxy.host_port_pair().ToString()) {
++    return false;
++  }
++  net::IPAddress address;
++  if (!address.AssignFromIPLiteral(proxy.host_port_pair().host()) ||
++      !address.IsIPv4()) {
++    return false;
++  }
++  const std::string rules =
++      command_line.GetSwitchValueASCII(network::switches::kHostResolverRules);
++  const std::string exclusion = ", EXCLUDE " + address.ToString();
++  return rules == "MAP * ~NOTFOUND" + exclusion ||
++         rules == "MAP * ~NOTFOUND " + exclusion;
++}
++
+ // Dangerous command line flags for which to display a warning that "stability
+ // and security will suffer".
+ const char* const kBadFlags[] = {
+@@ -286,6 +325,11 @@
+ #if !BUILDFLAG(IS_ANDROID)
+   for (const char* flag : kBadFlags) {
+     if (base::CommandLine::ForCurrentProcess()->HasSwitch(flag)) {
++      if (std::string_view(flag) == network::switches::kHostResolverRules &&
++          IsRestrictedSocksDnsGuard(
++              *base::CommandLine::ForCurrentProcess())) {
++        continue;
++      }
+       ShowBadFlagsInfoBar(web_contents, IDS_BAD_FLAGS_WARNING_MESSAGE, flag);
+       return;
+     }

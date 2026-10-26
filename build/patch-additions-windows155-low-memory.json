@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "kind": "windows155-opt-in-low-memory-and-restricted-socks-dns-warning",
+  "chromium_version": "155.0.8059.39",
+  "core_commit": "ffeb45a2bb88bc56a1dfed31410aeb10e9efcd5a",
+  "platform_commit": "989b4382364baaddb8b3180e1eb1030ca96a7273",
+  "qualification": "Ported against pinned upstream files plus selected Chromix hunks; full ungoogled/platform source-stack validation and Windows compilation remain required.",
+  "patches": [
+    {
+      "path": "patches/chromium155-windows-low-memory/0241-low-memory-startup-propagation.patch",
+      "sha256": "da4451fc1092d5285038a5e32ea71cabc9cdb2feba780933aa1916d63f4e3c3a"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0242-low-memory-skia-cache-budgets.patch",
+      "sha256": "54dc301231430db54178bf6579ad4e484347a6aa13f998692f5a20819736dd58"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0243-low-memory-no-kept-spare.patch",
+      "sha256": "72f2e5f9f3e4415f0e2bd9b58081c03a6a8157d00e5f43b373c8a6b7f9eaf163"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0244-low-memory-resource-retention.patch",
+      "sha256": "1e9a13d7cb9b66233e82f9bd156bfb2e012e544e6b4c43df09b486fb5cfe947a"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0245-low-memory-audio-idle.patch",
+      "sha256": "ec7ceb08f772e8bab28214233dff4bb1af3946bba194a00332085b9434d1d952"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0246-low-memory-explicit-spare-warmup.patch",
+      "sha256": "b747469f41c902118eb8d784e4c2b10e986b4a4e08c376d83382a764e3c954c2"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0247-low-memory-no-persistent-metrics.patch",
+      "sha256": "303550fc0b1c13adac6f42a32006de9c79723d4eede72e17cb8f46d2b1d8aade"
+    },
+    {
+      "path": "patches/chromium155-windows-low-memory/0248-restricted-socks-dns-warning.patch",
+      "sha256": "0376addb5a76d711e61ec03844e14082427f876fc6eb454ae0e8bcfb26a8452e"
+    }
+  ]
+}

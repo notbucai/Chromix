@@ -1,0 +1,54 @@
+{
+  "version": "155.0.8059.39",
+  "downloadedAt": 1793019382.360706,
+  "files": [
+    {
+      "path": "chrome/browser/chrome_content_browser_client.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/chrome/browser/chrome_content_browser_client.cc?format=TEXT",
+      "sha256": "5acf5a81454ca1ad8da7474d4aeee057c2ad7f765a443957ffe4a0bb5e70326f",
+      "bytes": 394670
+    },
+    {
+      "path": "gpu/config/skia_limits.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/gpu/config/skia_limits.cc?format=TEXT",
+      "sha256": "2340d4961615552118950d9ca0937c415b40dcdadf6650e12c41af86bc5d6617",
+      "bytes": 3386
+    },
+    {
+      "path": "content/browser/renderer_host/render_process_host_impl.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/content/browser/renderer_host/render_process_host_impl.cc?format=TEXT",
+      "sha256": "6d9b90abeb902d47259d5baa78c87672be140729fc86e53481b33de6221f4725",
+      "bytes": 257832
+    },
+    {
+      "path": "cc/resources/resource_pool.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/cc/resources/resource_pool.cc?format=TEXT",
+      "sha256": "c4bbc471b811ba41a321cb427e93e481f06f715c4a460ee301ff0204f29f9a81",
+      "bytes": 31448
+    },
+    {
+      "path": "content/browser/audio/audio_service.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/content/browser/audio/audio_service.cc?format=TEXT",
+      "sha256": "69eb527e034f61838c1062b45bba4a76f528e255bd92d21c2b33d480704ceb78",
+      "bytes": 10139
+    },
+    {
+      "path": "content/browser/renderer_host/spare_render_process_host_manager_impl.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/content/browser/renderer_host/spare_render_process_host_manager_impl.cc?format=TEXT",
+      "sha256": "aa6d25fff8b28dfff389721375ff5ad3f8dbd31f2a27b61fd0c18a6525f4b821",
+      "bytes": 47363
+    },
+    {
+      "path": "components/metrics/persistent_histograms.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/components/metrics/persistent_histograms.cc?format=TEXT",
+      "sha256": "87b5e190634e3e6507f9bf4b8294a48806f7d64417e07d01054454d35a606f08",
+      "bytes": 13030
+    },
+    {
+      "path": "chrome/browser/ui/startup/bad_flags_prompt.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.39/chrome/browser/ui/startup/bad_flags_prompt.cc?format=TEXT",
+      "sha256": "fec8f53e1f6986c53f6aebc752b65cbffe9c5b1b1da20d41d6bca98a70a259a4",
+      "bytes": 15400
+    }
+  ]
+}

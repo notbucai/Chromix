@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import sys
@@ -19,7 +20,7 @@ CORE = "37085e47cf580c815a30402917d350ce97399ded"
 MACOS154_CORE = "3e46b13825f808f0886e484d44532372655e5fe4"
 MACOS154_ADDITIONS_ROOT = "patches/chromium154-macos"
 MACOS154_ADDITIONS_MANIFEST = "build/patch-additions-macos154.json"
-MACOS154_ADDITIONS_SHA256 = "ec1c9c5d476b0c2f7cfa31095e2dcf364ad0b31fc6a48cb3dc49d01c823ce221"
+MACOS154_ADDITIONS_SHA256 = "7621e816a9b871184321157feb807d72ac6ced2dd43402ed8424eb0987e1a1e6"
 PLATFORM_COMMITS = {
     "windows": "f03c33d7974af5b40f25b01984ded8418d60fbe4",
     "linux": "f1441a6efb4d79427d1a3180b1877bbbdb1af7aa",
@@ -67,6 +68,9 @@ LINUX155_ADDITIONS_SHA256 = "5480c06026cf67f27f23fc4bdff4122c294cb0a8a16c4b5dfd7
 WINDOWS155_ADDITIONS_ROOT = "patches/chromium155-windows"
 WINDOWS155_ADDITIONS_MANIFEST = "build/patch-additions-windows155.json"
 WINDOWS155_ADDITIONS_SHA256 = "4e4b2c3655b2ba1c1f5b2601d5d467ee58f98e8f535214719f1f92c5016ebddd"
+WINDOWS155_LOW_MEMORY_ROOT = "patches/chromium155-windows-low-memory"
+WINDOWS155_LOW_MEMORY_MANIFEST = "build/patch-additions-windows155-low-memory.json"
+WINDOWS155_LOW_MEMORY_SHA256 = "c68cfc5030a9edbb0ea425be9ce660cf31cc1a2f4c6eb26c5eb801e825e0455e"
 OVERRIDES155 = {
     "0031-third_party-blink-renderer-platform-graphics-image_data_buffer-cc.patch": (
         "8b86c52d9df1ba45db00a09b293070be90d9dbc7463244c8ddf525017d265b7f",
@@ -218,12 +222,17 @@ def macos154_additions(repo: Path) -> tuple[list[str], dict | None]:
 
 
 def windows155_additions(repo: Path) -> tuple[list[str], dict | None]:
+    enabled = os.environ.get("CHROMIX_WINDOWS_LOW_MEMORY", "0")
+    if enabled not in ("0", "1"):
+        raise SelectionError("CHROMIX_WINDOWS_LOW_MEMORY must be 0 or 1")
     manifest = repo / WINDOWS155_ADDITIONS_MANIFEST
     directory = repo / WINDOWS155_ADDITIONS_ROOT
     # Pre-addition donors have neither input; their exact commit is authenticated by migration.
     if not manifest.exists() and not manifest.is_symlink():
         if directory.exists() or directory.is_symlink():
             raise SelectionError("Windows155 additions directory requires its pinned manifest")
+        if enabled == "1":
+            raise SelectionError("Windows155 low-memory overlay requires the current base additions manifest")
         return [], None
     raw = read(repo, WINDOWS155_ADDITIONS_MANIFEST)
     if digest(raw) != WINDOWS155_ADDITIONS_SHA256:
@@ -237,11 +246,38 @@ def windows155_additions(repo: Path) -> tuple[list[str], dict | None]:
     for entry in entries:
         if digest(read(repo, entry["path"])) != entry["sha256"]:
             raise SelectionError("changed Windows155 addition: " + entry["path"])
-    return [entry["path"] for entry in entries], {
+    info = {
         "schema_version": additions["schema_version"], "kind": additions["kind"],
         "manifest": {"path": WINDOWS155_ADDITIONS_MANIFEST, "sha256": digest(raw)},
         "patches": entries,
     }
+    enabled = os.environ.get("CHROMIX_WINDOWS_LOW_MEMORY", "0")
+    if enabled not in ("0", "1"):
+        raise SelectionError("CHROMIX_WINDOWS_LOW_MEMORY must be 0 or 1")
+    if enabled == "1":
+        extra_raw = read(repo, WINDOWS155_LOW_MEMORY_MANIFEST)
+        if digest(extra_raw) != WINDOWS155_LOW_MEMORY_SHA256:
+            raise SelectionError("changed Windows155 low-memory manifest")
+        extra = json.loads(extra_raw)
+        if (extra.get("chromium_version") != VERSION155 or
+                extra.get("core_commit") != CORE155 or
+                extra.get("platform_commit") != PLATFORM155_COMMITS["windows"]):
+            raise SelectionError("mismatched Windows155 low-memory pins")
+        extra_directory = repo / WINDOWS155_LOW_MEMORY_ROOT
+        if extra_directory.is_symlink() or not extra_directory.is_dir():
+            raise SelectionError("missing or linked Windows155 low-memory directory")
+        if {path.name for path in extra_directory.iterdir()} != {
+                Path(entry["path"]).name for entry in extra["patches"]}:
+            raise SelectionError("partial or unexpected Windows155 low-memory inventory")
+        for entry in extra["patches"]:
+            if (not entry["path"].startswith(WINDOWS155_LOW_MEMORY_ROOT + "/") or
+                    digest(read(repo, entry["path"])) != entry["sha256"]):
+                raise SelectionError("changed Windows155 low-memory patch: " + entry["path"])
+        entries = [*entries, *extra["patches"]]
+        info["patches"] = entries
+        info["optimizations"] = {"manifest": WINDOWS155_LOW_MEMORY_MANIFEST,
+                                 "sha256": digest(extra_raw), "kind": extra["kind"]}
+    return [entry["path"] for entry in entries], info
 
 
 def select(repo: Path, platform: str | None = None, *, src: Path | None = None,

@@ -1,0 +1,14 @@
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -2893,6 +2893,10 @@
+ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
+     base::CommandLine* command_line,
+     int child_process_id) {
++  // Opt-in memory budgets must be consistent in browser, renderer and GPU.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("uxr-low-memory")) {
++    command_line->AppendSwitch("uxr-low-memory");
++  }
+   crash_keys::AppendStringAnnotationsCommandLineSwitch(command_line);
+ #if BUILDFLAG(IS_MAC)
+   std::unique_ptr<metrics::ClientInfo> client_info =
