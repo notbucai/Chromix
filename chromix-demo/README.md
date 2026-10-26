@@ -227,3 +227,7 @@ Windows handoff: the Node headless policy is portable, but macOS native patches/
 ## 可选原生视频禁播
 
 使用含新补丁的内核后，`npm start -- --profile env-lite --disable-video` 禁播视频；`--enable-video` 本次恢复播放。默认不禁用，与低内存模式独立。视频附带的声音也不可用，独立音频不受该策略限制。此原生补丁尚未构建验证。详见 [策略及验证边界](../docs/video-playback-policy.md)。
+
+## 独立关闭 GPU/WebGL
+
+环境 JSON 设置 `"disableGpu": true` 会添加 `--disable-gpu`、`--disable-software-rasterizer`、`--disable-webgl`，保留 Canvas 2D。设置 false 并重启恢复。它不会启用整套低内存模式，不改变窗口尺寸、种子、登录数据或缓存上限。图形能力变化对网页可见；GPU 进程仍可能因其他职责存在，内存收益需实测。

@@ -22,7 +22,8 @@
     "x:login:check": "node --env-file=.env verify-x-login-flow.mjs",
     "test:login-flow": "node --env-file=.env --test login-flow.test.mjs",
     "test:proxy-options": "node native-proxy-options.test.mjs",
-    "test:video-options": "node --test video-options.test.mjs"
+    "test:video-options": "node --test video-options.test.mjs",
+    "test:gpu-options": "node --test gpu-options.test.mjs"
   },
   "dependencies": {
     "@xiaoxiaofeihh/chromix": "^0.1.5",

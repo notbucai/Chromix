@@ -72,6 +72,9 @@ export function environmentOptions(config, userDataDir = resolve(root, 'profiles
   if (config.disableVideoPlayback !== undefined && typeof config.disableVideoPlayback !== 'boolean') {
     throw new Error('disableVideoPlayback 必须为布尔值');
   }
+  if (config.disableGpu !== undefined && typeof config.disableGpu !== 'boolean') {
+    throw new Error('disableGpu 必须为布尔值');
+  }
   const display = config.display;
   return {
     userDataDir,
@@ -83,7 +86,9 @@ export function environmentOptions(config, userDataDir = resolve(root, 'profiles
     args: [`--fingerprint=${config.seed}`, '--disable-blink-features=AutomationControlled',
       ...restrictedSocksDnsArgs(config.proxy),
       ...(config.disableVideoPlayback === true ? ['--uxr-disable-video-playback'] : []),
-      ...(config.memoryMode === 'low' ? ['--disable-gpu', '--disable-software-rasterizer', '--enable-low-end-device-mode', '--renderer-process-limit=1', '--disk-cache-size=4194304', '--media-cache-size=1048576'] : []),
+      ...((config.disableGpu === true || config.memoryMode === 'low') ? ['--disable-gpu', '--disable-software-rasterizer'] : []),
+      ...(config.disableGpu === true ? ['--disable-webgl'] : []),
+      ...(config.memoryMode === 'low' ? ['--enable-low-end-device-mode', '--renderer-process-limit=1', '--disk-cache-size=4194304', '--media-cache-size=1048576'] : []),
     ],
     ...(config.proxy ? { proxy: config.proxy } : {}),
     ...(display ? {
