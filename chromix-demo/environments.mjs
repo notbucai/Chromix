@@ -75,6 +75,9 @@ export function environmentOptions(config, userDataDir = resolve(root, 'profiles
   if (config.disableGpu !== undefined && typeof config.disableGpu !== 'boolean') {
     throw new Error('disableGpu 必须为布尔值');
   }
+  if (config.audioRender !== undefined && !['native', 'isolated'].includes(config.audioRender)) {
+    throw new Error('audioRender 必须为 native 或 isolated');
+  }
   const display = config.display;
   return {
     userDataDir,
@@ -85,6 +88,7 @@ export function environmentOptions(config, userDataDir = resolve(root, 'profiles
     timezone: config.timezone,
     args: [`--fingerprint=${config.seed}`, '--disable-blink-features=AutomationControlled',
       ...restrictedSocksDnsArgs(config.proxy),
+      ...(config.audioRender === 'isolated' ? ['--fingerprint-audio-render=isolated', `--fingerprint-audio-seed=${config.seed}`] : []),
       ...(config.disableVideoPlayback === true ? ['--uxr-disable-video-playback'] : []),
       ...((config.disableGpu === true || config.memoryMode === 'low') ? ['--disable-gpu', '--disable-software-rasterizer'] : []),
       ...(config.disableGpu === true ? ['--disable-webgl'] : []),

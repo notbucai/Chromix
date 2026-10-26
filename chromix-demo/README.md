@@ -231,3 +231,7 @@ Windows handoff: the Node headless policy is portable, but macOS native patches/
 ## 独立关闭 GPU/WebGL
 
 环境 JSON 设置 `"disableGpu": true` 会添加 `--disable-gpu`、`--disable-software-rasterizer`、`--disable-webgl`，保留 Canvas 2D。设置 false 并重启恢复。它不会启用整套低内存模式，不改变窗口尺寸、种子、登录数据或缓存上限。图形能力变化对网页可见；GPU 进程仍可能因其他职责存在，内存收益需实测。
+
+## 固定种子的音频隔离
+
+环境 JSON 设置 `"audioRender": "isolated"` 后重启，使用该环境现有 `seed` 作为音频种子，通过原生参数开启确定性音频图微扰；默认或 `native` 保留原生输出。需要支持音频隔离参数的 Chromix 内核。该设置改变音频指纹，但不生成新种子或修改登录数据。`audio-fingerprint-probe.mjs` 提供离线、无声音的重复采样验证；结果哈希不等同于任意第三方检测网站的算法。
